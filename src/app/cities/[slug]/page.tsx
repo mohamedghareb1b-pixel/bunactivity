@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `/cities/${city.slug}`,
     },
   };
+}
 
 export default async function CityPage({ params }: Props) {
   const city = await getCity(params.slug);
