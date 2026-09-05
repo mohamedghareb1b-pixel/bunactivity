@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import MarkReadButton from "@/components/admin/MarkReadButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminMessagesPage() {
   const messages = await prisma.contactMessage.findMany({
     orderBy: { createdAt: "desc" },

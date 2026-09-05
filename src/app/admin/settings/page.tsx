@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import SettingsForm from "@/components/admin/SettingsForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSettingsPage() {
   let settings = await prisma.siteSettings.findFirst();
   if (!settings) {
