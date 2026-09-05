@@ -77,7 +77,7 @@ export default async function ArtistPage({ params }: Props) {
   const relatedArtists = Array.from(relatedArtistsMap.values()).slice(0, 8);
 
   return (
-    <main className="px-6 py-16 max-w-4xl mx-auto space-y-12">
+    <main className="px-6 py-6 sm:py-10 max-w-4xl mx-auto space-y-8">
       <JsonLd
         data={[
           musicGroupJsonLd({
@@ -100,7 +100,7 @@ export default async function ArtistPage({ params }: Props) {
         <Link href="/">Home</Link> / {artist.name}
       </nav>
 
-      {/* Artist Header */}
+      {/* Artist Header — short bio only, kept compact */}
       <section className="flex flex-col sm:flex-row gap-6 items-start">
         {artist.image && (
           <div className="relative w-40 h-40 rounded-full overflow-hidden shrink-0">
@@ -118,11 +118,23 @@ export default async function ArtistPage({ params }: Props) {
         </div>
       </section>
 
-      {/* About */}
-      {artist.biography && (
+      {/* Next Concert — moved up so there's immediate, useful content near the top */}
+      {nextConcert && (
         <section>
-          <h2 className="text-2xl font-semibold mb-3">About {artist.name}</h2>
-          <p className="opacity-90 whitespace-pre-line">{artist.biography}</p>
+          <h2 className="text-2xl font-semibold mb-3">Next Concert</h2>
+          <div className="max-w-md">
+            <EventCard
+              slug={nextConcert.slug}
+              name={nextConcert.name}
+              artistNames={nextConcert.artists.map((ea) => ea.artist.name)}
+              city={nextConcert.venue?.city?.name}
+              state={nextConcert.venue?.state}
+              venueName={nextConcert.venue?.name}
+              date={nextConcert.date}
+              time={nextConcert.time}
+              image={nextConcert.image}
+            />
+          </div>
         </section>
       )}
 
@@ -141,23 +153,11 @@ export default async function ArtistPage({ params }: Props) {
         </section>
       )}
 
-      {/* Next Concert */}
-      {nextConcert && (
+      {/* About — the long biography now comes further down the page */}
+      {artist.biography && (
         <section>
-          <h2 className="text-2xl font-semibold mb-3">Next Concert</h2>
-          <div className="max-w-md">
-            <EventCard
-              slug={nextConcert.slug}
-              name={nextConcert.name}
-              artistNames={nextConcert.artists.map((ea) => ea.artist.name)}
-              city={nextConcert.venue?.city?.name}
-              state={nextConcert.venue?.state}
-              venueName={nextConcert.venue?.name}
-              date={nextConcert.date}
-              time={nextConcert.time}
-              image={nextConcert.image}
-            />
-          </div>
+          <h2 className="text-2xl font-semibold mb-3">About {artist.name}</h2>
+          <p className="opacity-90 whitespace-pre-line">{artist.biography}</p>
         </section>
       )}
 

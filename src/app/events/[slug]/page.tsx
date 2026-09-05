@@ -73,7 +73,7 @@ export default async function EventPage({ params }: Props) {
   });
 
   return (
-    <main className="px-6 py-16 max-w-3xl mx-auto space-y-8">
+    <main className="px-6 py-6 sm:py-10 max-w-3xl mx-auto space-y-6">
       <JsonLd
         data={[
           eventJsonLd({
