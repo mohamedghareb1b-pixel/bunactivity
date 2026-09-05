@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SearchBar({
-  placeholder = "Search artists, cities or events",
+  placeholder = "Search artists, concerts, cities or venues",
   initialValue = "",
 }: {
   placeholder?: string;
@@ -21,15 +21,15 @@ export default function SearchBar({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto flex gap-2">
+    <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto flex gap-2">
       <input
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 rounded-full border px-4 py-2"
+        className="min-w-0 flex-1 rounded-full border px-4 py-2"
       />
-      <button type="submit" className="btn-primary px-5 py-2">
+      <button type="submit" className="btn-primary px-5 py-2 shrink-0">
         Search
       </button>
     </form>

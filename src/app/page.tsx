@@ -54,7 +54,7 @@ export default async function HomePage() {
   return (
     <main>
       {/* Hero */}
-      <section className="px-6 py-16 text-center">
+      <section className="px-6 py-8 sm:py-12 text-center">
         <h1 className="text-4xl font-bold">Find Your Next Night Out.</h1>
         <p className="mt-2 text-lg">
           Discover concerts, artists and live events.
@@ -66,7 +66,7 @@ export default async function HomePage() {
 
       {/* Upcoming Events */}
       {upcomingEvents.length > 0 && (
-        <section className="px-6 py-10">
+        <section className="px-6 pt-2 pb-10 sm:pt-6">
           <h2 className="text-2xl font-semibold mb-4">Upcoming Events</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {upcomingEvents.map((e) => (

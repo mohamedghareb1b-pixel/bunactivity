@@ -57,8 +57,8 @@ export default async function ConcertsPage({ searchParams }: Props) {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <main className="px-6 py-16 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Concerts</h1>
+    <main className="px-6 py-8 sm:py-12 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Concerts</h1>
 
       <ConcertsFilterBar
         cities={cities.map((c) => ({ value: c.slug, label: c.name }))}

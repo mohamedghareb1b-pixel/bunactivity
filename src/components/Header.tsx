@@ -24,12 +24,9 @@ export default function Header() {
           <Link href="/contact">Contact</Link>
         </nav>
 
-        <Link
-          href="/search"
-          className="text-sm underline md:no-underline md:btn-primary md:px-4 md:py-2"
-        >
-          Search
-        </Link>
+        <span className="hidden sm:block text-sm italic opacity-70">
+          Let&apos;s Have Some Fun
+        </span>
       </div>
     </header>
   );

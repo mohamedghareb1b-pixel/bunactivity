@@ -38,7 +38,7 @@ export default function ConcertsFilterBar({
   const currentArtist = searchParams.get("artist") ?? "";
 
   return (
-    <div className="flex flex-wrap gap-3 mb-8">
+    <div className="flex flex-wrap gap-3 mb-6">
       <select
         value={currentDate}
         onChange={(e) => updateParam("date", e.target.value)}
