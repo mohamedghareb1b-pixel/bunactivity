@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ivory: #e4d8c0;
+  --color-coffee-light: #9c5a3a;
+  --color-coffee-dark: #3c2319;
+  --color-beige: #d2c3a5;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-coffee-dark);
+  font-family: var(--font-sans);
+}
+
+.card {
+  background-color: var(--color-beige);
+  border-radius: 0.75rem;
+}
+
+.btn-primary {
+  background-color: var(--color-coffee-light);
+  color: var(--color-ivory);
+  border-radius: 9999px;
+  font-weight: 600;
+}

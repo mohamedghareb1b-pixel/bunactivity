@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum EventStatus {
+  UPCOMING
+  PAST
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Artist {
+  id              String        @id @default(cuid())
+  name            String
+  slug            String        @unique
+  image           String?
+  shortBio        String?
+  biography       String?
+  genre           String?
+  songs           Json?         // [{ name, releaseYear, streamingLink? }]
+  socialLinks     Json?         // { tiktok, instagram?, youtube?, x? }
+  seoTitle        String?
+  seoDescription  String?
+  featured        Boolean       @default(false)
+  status          PublishStatus @default(DRAFT)
+  events          EventArtist[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Event {
+  id                String        @id @default(cuid())
+  name              String
+  slug              String        @unique
+  image             String?
+  description       String?
+  date              DateTime
+  time              String?
+  timezone          String?
+  venueId           String?
+  venue             Venue?        @relation(fields: [venueId], references: [id])
+  ticketUrl         String
+  affiliateProvider String?
+  seoTitle          String?
+  seoDescription    String?
+  status            EventStatus   @default(UPCOMING)
+  publishStatus     PublishStatus @default(DRAFT)
+  featured          Boolean       @default(false)
+  artists           EventArtist[]
+  clicks            Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model EventArtist {
+  eventId  String
+  artistId String
+  event    Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, artistId])
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  cityId    String?
+  city      City?    @relation(fields: [cityId], references: [id])
+  state     String?
+  country   String?
+  latitude  Float?
+  longitude Float?
+  events    Event[]
+}
+
+model City {
+  id      String  @id @default(cuid())
+  name    String
+  slug    String  @unique
+  state   String?
+  country String?
+  venues  Venue[]
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id                 String  @id @default(cuid())
+  siteTitle          String  @default("BunActivity")
+  siteDescription    String?
+  siteUrl            String?
+  defaultOgImage     String?
+  googleVerification String?
+  analyticsId        String?
+  tagManagerId       String?
+  tiktokUrl          String?
+  affiliateDisclosure String?
+  defaultAffiliateProvider String?
+}
