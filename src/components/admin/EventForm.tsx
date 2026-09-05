@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { parseEventPaste } from "@/lib/parse-event-paste";
 
 interface ArtistOption {
   id: string;
@@ -53,9 +54,55 @@ export default function EventForm({
   );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [pasteMessage, setPasteMessage] = useState<string | null>(null);
+  const [artistSearch, setArtistSearch] = useState("");
+
+  const filteredArtists = useMemo(() => {
+    const q = artistSearch.trim().toLowerCase();
+    if (!q) return artistOptions;
+    return artistOptions.filter((a) => a.name.toLowerCase().includes(q));
+  }, [artistOptions, artistSearch]);
+
+  const selectedArtists = useMemo(
+    () => artistOptions.filter((a) => values.artistIds.includes(a.id)),
+    [artistOptions, values.artistIds]
+  );
 
   function update<K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
+  }
+
+  function handleAutoFill() {
+    const parsed = parseEventPaste(pasteText);
+    const filledCount = Object.keys(parsed).length;
+
+    if (filledCount === 0) {
+      setPasteMessage("Couldn't recognize any fields in that text — check the format and try again.");
+      return;
+    }
+
+    setValues((v) => ({
+      ...v,
+      ...(parsed.name !== undefined ? { name: parsed.name } : {}),
+      ...(parsed.slug !== undefined ? { slug: parsed.slug } : {}),
+      ...(parsed.description !== undefined ? { description: parsed.description } : {}),
+      ...(parsed.date !== undefined ? { date: parsed.date } : {}),
+      ...(parsed.time !== undefined ? { time: parsed.time } : {}),
+      ...(parsed.timezone !== undefined ? { timezone: parsed.timezone } : {}),
+      ...(parsed.venueName !== undefined ? { venueName: parsed.venueName } : {}),
+      ...(parsed.city !== undefined ? { city: parsed.city } : {}),
+      ...(parsed.state !== undefined ? { state: parsed.state } : {}),
+      ...(parsed.country !== undefined ? { country: parsed.country } : {}),
+      ...(parsed.ticketUrl !== undefined ? { ticketUrl: parsed.ticketUrl } : {}),
+      ...(parsed.affiliateProvider !== undefined ? { affiliateProvider: parsed.affiliateProvider } : {}),
+      ...(parsed.seoTitle !== undefined ? { seoTitle: parsed.seoTitle } : {}),
+      ...(parsed.seoDescription !== undefined ? { seoDescription: parsed.seoDescription } : {}),
+      ...(parsed.featured !== undefined ? { featured: parsed.featured } : {}),
+      ...(parsed.publishStatus !== undefined ? { publishStatus: parsed.publishStatus } : {}),
+    }));
+
+    setPasteMessage(`Filled ${filledCount} field${filledCount === 1 ? "" : "s"} below. Review before saving.`);
   }
 
   function toggleArtist(id: string) {
@@ -103,6 +150,31 @@ export default function EventForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
+      <div className="card p-4 space-y-2 border-2 border-dashed">
+        <label className="block text-sm font-semibold">
+          Paste Event Details (from ChatGPT or anywhere else)
+        </label>
+        <p className="text-xs opacity-70">
+          Paste the table your AI tool gave you — or even plain &quot;Field: Value&quot;
+          lines — and it&apos;ll fill in everything below automatically.
+        </p>
+        <textarea
+          value={pasteText}
+          onChange={(e) => setPasteText(e.target.value)}
+          rows={6}
+          className="w-full rounded border px-3 py-2 text-sm font-mono"
+          placeholder={"Event Name: Lindsey Stirling Live in Hollywood\nSlug: lindsey-stirling-live-hollywood\nDate: 2026-11-18\n..."}
+        />
+        <button
+          type="button"
+          onClick={handleAutoFill}
+          className="btn-primary px-4 py-2 text-sm"
+        >
+          Auto-Fill Form
+        </button>
+        {pasteMessage && <p className="text-sm opacity-80">{pasteMessage}</p>}
+      </div>
+
       <div>
         <label className="block text-sm font-medium mb-1">Event Name</label>
         <input
@@ -232,18 +304,52 @@ export default function EventForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Artists (select multiple)</label>
-        <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border rounded p-3">
-          {artistOptions.map((a) => (
-            <label key={a.id} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={values.artistIds.includes(a.id)}
-                onChange={() => toggleArtist(a.id)}
-              />
-              {a.name}
-            </label>
-          ))}
+        <label className="block text-sm font-medium mb-2">Artists (search and select)</label>
+
+        {selectedArtists.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {selectedArtists.map((a) => (
+              <span
+                key={a.id}
+                className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full card"
+              >
+                {a.name}
+                <button
+                  type="button"
+                  onClick={() => toggleArtist(a.id)}
+                  aria-label={`Remove ${a.name}`}
+                  className="opacity-60 hover:opacity-100"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        <input
+          type="search"
+          value={artistSearch}
+          onChange={(e) => setArtistSearch(e.target.value)}
+          placeholder="Search artists by name"
+          className="w-full min-w-0 rounded border px-3 py-2 text-sm mb-2"
+        />
+
+        <div className="max-h-48 overflow-y-auto border rounded p-3 space-y-1">
+          {filteredArtists.length > 0 ? (
+            filteredArtists.map((a) => (
+              <label key={a.id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={values.artistIds.includes(a.id)}
+                  onChange={() => toggleArtist(a.id)}
+                />
+                {a.name}
+              </label>
+            ))
+          ) : (
+            <p className="text-sm opacity-60">No artists match &quot;{artistSearch}&quot;.</p>
+          )}
         </div>
       </div>
 
