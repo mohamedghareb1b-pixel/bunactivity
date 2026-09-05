@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import CityCard from "@/components/public/CityCard";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Cities",
 };

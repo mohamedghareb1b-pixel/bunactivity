@@ -4,6 +4,8 @@ import ConcertsFilterBar from "@/components/public/ConcertsFilterBar";
 import Pagination from "@/components/public/Pagination";
 import { resolveDateRange } from "@/lib/date-filters";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Concerts",
   alternates: {

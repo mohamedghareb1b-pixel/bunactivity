@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import ArtistsSearchList from "@/components/public/ArtistsSearchList";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Artists",
 };

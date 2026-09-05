@@ -5,6 +5,8 @@ import ArtistCard from "@/components/public/ArtistCard";
 import CityCard from "@/components/public/CityCard";
 import SearchBar from "@/components/public/SearchBar";
 
+export const dynamic = "force-dynamic";
+
 function startOfWeek() {
   return new Date();
 }

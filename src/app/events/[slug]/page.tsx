@@ -7,6 +7,8 @@ import EventCard from "@/components/public/EventCard";
 import JsonLd from "@/components/JsonLd";
 import { eventJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: { slug: string };
 }

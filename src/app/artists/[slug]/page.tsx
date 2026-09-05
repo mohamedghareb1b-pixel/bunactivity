@@ -8,6 +8,8 @@ import ArtistCard from "@/components/public/ArtistCard";
 import JsonLd from "@/components/JsonLd";
 import { musicGroupJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: { slug: string };
 }
