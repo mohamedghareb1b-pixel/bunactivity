@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { parseEventPaste } from "@/lib/parse-event-paste";
 
 interface ArtistOption {
   id: string;
@@ -54,8 +53,6 @@ export default function EventForm({
   );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [pasteText, setPasteText] = useState("");
-  const [pasteMessage, setPasteMessage] = useState<string | null>(null);
   const [artistSearch, setArtistSearch] = useState("");
 
   const filteredArtists = useMemo(() => {
@@ -71,38 +68,6 @@ export default function EventForm({
 
   function update<K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
-  }
-
-  function handleAutoFill() {
-    const parsed = parseEventPaste(pasteText);
-    const filledCount = Object.keys(parsed).length;
-
-    if (filledCount === 0) {
-      setPasteMessage("Couldn't recognize any fields in that text — check the format and try again.");
-      return;
-    }
-
-    setValues((v) => ({
-      ...v,
-      ...(parsed.name !== undefined ? { name: parsed.name } : {}),
-      ...(parsed.slug !== undefined ? { slug: parsed.slug } : {}),
-      ...(parsed.description !== undefined ? { description: parsed.description } : {}),
-      ...(parsed.date !== undefined ? { date: parsed.date } : {}),
-      ...(parsed.time !== undefined ? { time: parsed.time } : {}),
-      ...(parsed.timezone !== undefined ? { timezone: parsed.timezone } : {}),
-      ...(parsed.venueName !== undefined ? { venueName: parsed.venueName } : {}),
-      ...(parsed.city !== undefined ? { city: parsed.city } : {}),
-      ...(parsed.state !== undefined ? { state: parsed.state } : {}),
-      ...(parsed.country !== undefined ? { country: parsed.country } : {}),
-      ...(parsed.ticketUrl !== undefined ? { ticketUrl: parsed.ticketUrl } : {}),
-      ...(parsed.affiliateProvider !== undefined ? { affiliateProvider: parsed.affiliateProvider } : {}),
-      ...(parsed.seoTitle !== undefined ? { seoTitle: parsed.seoTitle } : {}),
-      ...(parsed.seoDescription !== undefined ? { seoDescription: parsed.seoDescription } : {}),
-      ...(parsed.featured !== undefined ? { featured: parsed.featured } : {}),
-      ...(parsed.publishStatus !== undefined ? { publishStatus: parsed.publishStatus } : {}),
-    }));
-
-    setPasteMessage(`Filled ${filledCount} field${filledCount === 1 ? "" : "s"} below. Review before saving.`);
   }
 
   function toggleArtist(id: string) {
@@ -150,31 +115,6 @@ export default function EventForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
-      <div className="card p-4 space-y-2 border-2 border-dashed">
-        <label className="block text-sm font-semibold">
-          Paste Event Details (from ChatGPT or anywhere else)
-        </label>
-        <p className="text-xs opacity-70">
-          Paste the table your AI tool gave you — or even plain &quot;Field: Value&quot;
-          lines — and it&apos;ll fill in everything below automatically.
-        </p>
-        <textarea
-          value={pasteText}
-          onChange={(e) => setPasteText(e.target.value)}
-          rows={6}
-          className="w-full rounded border px-3 py-2 text-sm font-mono"
-          placeholder={"Event Name: Lindsey Stirling Live in Hollywood\nSlug: lindsey-stirling-live-hollywood\nDate: 2026-11-18\n..."}
-        />
-        <button
-          type="button"
-          onClick={handleAutoFill}
-          className="btn-primary px-4 py-2 text-sm"
-        >
-          Auto-Fill Form
-        </button>
-        {pasteMessage && <p className="text-sm opacity-80">{pasteMessage}</p>}
-      </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">Event Name</label>
         <input
